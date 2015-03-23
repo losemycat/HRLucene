@@ -39,7 +39,7 @@ public class IndexWriterFactory {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return instance;
 	}
 
 }
