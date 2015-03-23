@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -35,7 +36,7 @@ public class IndexWriterFactory {
 					String path = LucenePropertiesFactory.getInstance().getProperty("targetPath");
 					try {
 						Directory directory = FSDirectory.open(new File(path));
-						Analyzer analyzer = new StandardAnalyzer(version);
+						Analyzer analyzer = new WhitespaceAnalyzer(version);
 						IndexWriterConfig config = new IndexWriterConfig(version, analyzer);
 						instance = new IndexWriter(directory, config);
 					} catch (IOException e) {
