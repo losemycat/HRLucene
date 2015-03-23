@@ -59,11 +59,12 @@ public class IndexFiles {
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 			String line = "";
-			Document document = new Document();
 			while ((line = reader.readLine()) != null) {
+				Document document = new Document();
 				document.add(new TextField("contents", line, Store.YES));
+				writer.addDocument(document);
 			}
-			writer.addDocument(document);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

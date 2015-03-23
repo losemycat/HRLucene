@@ -36,7 +36,7 @@ public class IndexWriterFactory {
 					String path = LucenePropertiesFactory.getInstance().getProperty("targetPath");
 					try {
 						Directory directory = FSDirectory.open(new File(path));
-						Analyzer analyzer = new WhitespaceAnalyzer(version);
+						Analyzer analyzer = new StandardAnalyzer(version);
 						IndexWriterConfig config = new IndexWriterConfig(version, analyzer);
 						instance = new IndexWriter(directory, config);
 					} catch (IOException e) {
