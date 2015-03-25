@@ -10,8 +10,11 @@ public class TestSearcher {
 	@Test
 	public void test(){
 		Searcher searcher = new Searcher();
-		List<String> list = new ArrayList<String>();
+		List<SearchResult> list = searcher.seach("001", "黄宁", 100, 0, 50);
 		System.out.println(list.size());
-		System.out.println(list.toString());
+		for (SearchResult searchResult : list) {
+			System.out.println("ID: "+searchResult.getId());
+			System.out.println("Summary: "+searchResult.getSummary());
+		}
 	}
 }

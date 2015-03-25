@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -19,9 +18,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.highlight.Formatter;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
@@ -66,7 +63,7 @@ public class Searcher {
 				Document document = searcher.doc(doc.doc);
 				SearchResult result = new SearchResult();
 				result.setId(this.toHighlighter(query, analyzer, document, "id"));
-				result.setId(this.toHighlighter(query, analyzer, document, "summary"));
+				result.setSummary(this.toHighlighter(query, analyzer, document, "summary"));
 				list.add(result);
 			}
 		} catch (Exception e) {

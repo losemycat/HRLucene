@@ -10,6 +10,8 @@ public class TestLuceneProperties {
 		String srcPath = LuceneProperties.get(LuceneConstants.SRC_DIRECTORY);
 		System.out.println(indexPath);
 		System.out.println(srcPath);
+		System.out.println(LuceneProperties.get("startTag"));
+		System.out.println(LuceneProperties.get("endTag"));
 	}
 
 }
