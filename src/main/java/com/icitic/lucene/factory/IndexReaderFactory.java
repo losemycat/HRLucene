@@ -1,4 +1,4 @@
-package com.icitic.lucene;
+package com.icitic.lucene.factory;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,14 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import com.icitic.lucene.LuceneConstants;
+import com.icitic.lucene.LuceneProperties;
+
+/**
+ * 单例IndexReader工厂
+ * @author hyt
+ *
+ */
 public class IndexReaderFactory {
 
 	/**
@@ -25,7 +33,7 @@ public class IndexReaderFactory {
 		if (instance == null) {
 			synchronized (IndexReaderFactory.class) {
 				if (instance == null) {
-					String path = LucenePropertiesFactory.getInstance().getProperty("targetPath");
+					String path = LuceneProperties.get(LuceneConstants.INDEX_DIRECTORY);
 					Directory directory = null;
 					try {
 						directory = FSDirectory.open(new File(path));
@@ -36,7 +44,6 @@ public class IndexReaderFactory {
 				}
 			}
 		}
-
 		return instance;
 	}
 
