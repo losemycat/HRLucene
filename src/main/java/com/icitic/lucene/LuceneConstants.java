@@ -22,12 +22,12 @@ public class LuceneConstants {
 	/**
 	 * 高亮显示的开始标签
 	 */
-	public static final String HL_START_TAG = "hl_start_tag";
+	public static final String HL_START_TAG = "startTag";
 	
 	/**
 	 * 高亮显示的借书标签
 	 */
-	public static final String HL_END_TAG = "hl_end_tag";
+	public static final String HL_END_TAG = "endTag";
 	
 	/**
 	 * 目标索引文件存放的目录
