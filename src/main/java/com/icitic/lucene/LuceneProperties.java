@@ -60,7 +60,7 @@ public class LuceneProperties {
 	/**
 	 * 当lucene.properties文件修改时，重新加载进Map集合中
 	 */
-	public static void refreshProperties() {
+	public static void reload() {
 		map.clear();
 		loadProperties(path);
 	}

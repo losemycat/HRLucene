@@ -15,6 +15,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -60,6 +61,9 @@ public class Searcher {
 			Query query = this.buildQuery(analyzer,orgId, contents);
 			TopDocs docs = searcher.search(query, max);
 			for (ScoreDoc doc : docs.scoreDocs) {
+				System.out.println("doc: "+doc.doc);
+				System.out.println("score: "+doc.score);
+				System.out.println("shardIndex: "+doc.shardIndex);
 				Document document = searcher.doc(doc.doc);
 				SearchResult result = new SearchResult();
 				result.setId(this.toHighlighter(query, analyzer, document, "id"));
@@ -147,6 +151,10 @@ public class Searcher {
 			e.printStackTrace();
 		}
 		return text;
+	}
+	
+	public static void main(String[] args) {
+		MatchAllDocsQuery query = new MatchAllDocsQuery();
 	}
 	
 }

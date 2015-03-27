@@ -14,13 +14,31 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.MergePolicy.OneMerge;
 
 import com.icitic.lucene.factory.IndexWriterFactory;
 
 public class IndexFiles {
+
+	/**
+	 * 声明整个索引周期中使用的核心类
+	 */
+	private final IndexWriter writer;
+
+	/**
+	 * 构造方法中初始化IndeWriter
+	 */
+	public IndexFiles() {
+		writer = IndexWriterFactory.getInstance();
+	}
 	
+	
+	
+	/**
+	 * 测试代码 过后删除
+	 */
 	public static Map<String, String> map = new HashMap<String, String>();
-	
 	static{
 		map.put("000001", "姓名：张晓林　性别：男");
 		map.put("000002", "姓名：高志鹏    性别：男");
@@ -41,7 +59,7 @@ public class IndexFiles {
 	/**
 	 * 从properties文件中获取源文件所存放的目录
 	 * 
-	 * @return
+	 * @return 源文件目录
 	 */
 	private String getSrcPath() {
 		String path = LuceneProperties.get(LuceneConstants.SRC_DIRECTORY);
@@ -53,14 +71,13 @@ public class IndexFiles {
 	 */
 	public void indexFiles() {
 		try {
-			IndexWriter writer = IndexWriterFactory.getInstance();
 			srcPath = getSrcPath();
 			if (StringUtils.isNotBlank(srcPath)) {
 				File srcDir = new File(srcPath);
 				if (srcDir.exists() && srcDir.isDirectory()) {
-					recursionIndexFiles(writer, srcDir);
+					recursionIndexFiles(srcDir);
 				} else if (srcDir.exists() && srcDir.isFile()) {
-					indexFile(writer, srcDir);
+					indexFile(srcDir);
 				}
 			}
 			writer.commit();
@@ -77,15 +94,15 @@ public class IndexFiles {
 	 * @param srcDir
 	 *            源文件所存放的目录
 	 */
-	private void recursionIndexFiles(IndexWriter writer, File file) {
+	private void recursionIndexFiles(File files) {
 		try {
-			if (file.exists() && file.isDirectory()) {
-				for (File f : file.listFiles()) {
-					recursionIndexFiles(writer, f);
+			if (files.exists() && files.isDirectory()) {
+				for (File f : files.listFiles()) {
+					recursionIndexFiles(f);
 				}
 			}
-			if (file.exists() && file.isFile()) {
-				indexFile(writer, file);
+			if (files.exists() && files.isFile()) {
+				indexFile(files);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -101,7 +118,7 @@ public class IndexFiles {
 	 * @param file
 	 *            文件对象
 	 */
-	private void indexFile(IndexWriter writer, File file) {
+	private void indexFile(File file) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
@@ -112,6 +129,9 @@ public class IndexFiles {
 			//建立orgId域的索引
 			StringField orgIdField = new StringField("orgid", spliteOrgId(file.getName()),Store.YES);
 			doc.add(orgIdField);
+			//建立文件名的索引越
+			StringField filename = new StringField("filename", file.getName(), Store.YES);
+			doc.add(filename);
 			//建立正文域的索引，权值扩大10倍
 			TextField contentsField = new TextField("contents", reader);
 			contentsField.setBoost(LuceneConstants.DEFAULT_BOOST*10);
@@ -169,5 +189,55 @@ public class IndexFiles {
 	 */
 	private String querySummaryById(String id) {
 		return map.get(id);
+	}
+	
+	/**
+	 * 根据域名以及域名中的值批量更新索引
+	 * @param field
+	 * @param ids
+	 */
+	public void updateIndexs(String field,String[] texts){
+		for (String text : texts) {
+			updateIndex(field, text);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param field
+	 * @param id
+	 */
+	public void updateIndex(String field,String text){
+		try {
+			writer.updateDocument(new Term(field,text), null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 * @param field
+	 * @param texts
+	 */
+	public void deleteIndexs(String field, String[] texts) {
+		for (String text : texts) {
+			deleteIndex(field, text);
+		}
+
+	}
+	
+	/**
+	 * 
+	 * @param field
+	 * @param text
+	 */
+	public void deleteIndex(String field,String text){
+		try {
+			writer.deleteDocuments(new Term(field, text));
+			writer.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

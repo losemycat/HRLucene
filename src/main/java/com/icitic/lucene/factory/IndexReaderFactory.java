@@ -21,14 +21,14 @@ public class IndexReaderFactory {
 	/**
 	 * 声明IndexReader的对象
 	 */
-	private static IndexReader instance = null;
+	private static DirectoryReader instance = null;
 
 	/**
 	 * 获取IndexReader的单例对象
 	 * 
 	 * @return
 	 */
-	public static synchronized IndexReader getInstance() {
+	public static synchronized DirectoryReader getInstance() {
 
 		if (instance == null) {
 			synchronized (IndexReaderFactory.class) {
@@ -47,4 +47,21 @@ public class IndexReaderFactory {
 		return instance;
 	}
 
+	/**
+	 * 索引更新后需要重新打开IndexReader载入新的索引
+	 */
+	public static DirectoryReader reopen() {
+		if (instance == null) {
+			instance = getInstance();
+		} else {
+			try {
+				if (!instance.isCurrent()){
+					instance = instance.openIfChanged(instance);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return instance;
+	}
 }
